@@ -22,6 +22,8 @@
 #ifndef FST_NO_DYNAMIC_LINKING
 #if !defined(_WIN32) && !defined(_WIN64)
 #include <dlfcn.h>
+#else
+#define FST_NO_DYNAMIC_LINKING
 #endif
 #endif
 #include <map>

@@ -20,6 +20,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if (WIN32)
   add_definitions(/bigobj)
   add_compile_options(/FS)
+  add_definitions(-DNOMINMAX)
   #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
   #this must be disabled unless the previous option (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS) is enabled
   option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
