@@ -1,23 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
 project(openfst)
 include(CTest)
-find_package(ICU COMPONENTS data i18n io  test tu uc)
-if (ICU_FOUND)
-  include_directories(${ICU_INCLUDE_DIRS})
-  set(LIBS ${LIBS} ${ICU_LIBRARIES})
-endif (ICU_FOUND)
 
-find_package(ZLIB)
-if (ZLIB_FOUND)
-  include_directories(${ZLIB_INCLUDE_DIRECTORIES})
-  set(ZLIBS ${ZLIB_LIBRARIES})
-endif (ZLIB_FOUND)
 
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (WIN32)
+if(MSVC)
   add_definitions(/bigobj)
   add_definitions(-DNOMINMAX)
   #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
@@ -25,20 +15,28 @@ if (WIN32)
   option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 else()
   option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-endif (WIN32)
+endif()
 
-set(SOVERSION "16")
+set(SOVERSION "23")
 OPTION(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in VS" ON)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ${BUILD_USE_SOLUTION_FOLDERS})
 
-option(HAVE_BIN          "Build the fst binaries" ON)
-option(HAVE_SCRIPT       "Build the fstscript" ON)
-option(HAVE_COMPACT      "Build compact" ON)
-option(HAVE_COMPRESS "Build compress" OFF)
-option(HAVE_CONST   "Build const" ON)
-option(HAVE_FAR  "Build far" ON)
-option(HAVE_GRM "Build grm" ON)
-option(HAVE_PDT "Build pdt" ON)
-option(HAVE_MPDT "Build mpdt" ON)
+
+# Optional features (see README for details)
+option(HAVE_BIN              "Enable fst::script and executables" ON)           # --enable-bin
+option(HAVE_COMPACT          "Enable CompactFst extensions" OFF)                # --enable-compact-fsts
+option(HAVE_COMPRESS         "Enable compression extension" OFF)                # --enable-compress
+option(HAVE_CONST            "Enable ConstFst extensions" OFF)                  # --enable-const-fsts
+option(HAVE_FAR              "Enable FAR extensions" OFF)                       # --enable-far
+option(HAVE_FSTS             "Enable all FST SO extensions" OFF)                # --enable-fsts
+option(HAVE_GRM              "Enable all dependencies of OpenGrm" OFF)          # --enable-grm
+option(HAVE_LINEAR           "Enable LinearTagger/ClassifierFst extensions" OFF)# --enable-linear-fsts
+option(HAVE_LOOKAHEAD        "Enable LookAheadFst extensions" OFF)              # --enable-lookahead-fsts
+option(HAVE_MPDT             "Enable MPDT extensions" OFF)                      # --enable-mpdt
+option(HAVE_NGRAM            "Enable NGramFst extensions" OFF)                  # --enable-ngram-fsts
+option(HAVE_PDT              "Enable PDT extensions" OFF)                       # --enable-pdt
+option(HAVE_PYTHON           "Enable Python extension" OFF)                     # --enable-python
+option(HAVE_SPECIAL          "Enable special-matcher extensions" OFF)           # --enable-special
+option(HAVE_SCRIPT           "Build the fstscript" ON)
 
 add_subdirectory(src)

@@ -12,10 +12,15 @@ add_library(fst
   util.cc
 )
 
-target_include_directories(fst PRIVATE ../include)
+target_include_directories(fst PRIVATE ${CMAKE_SOURCE_DIR}/src/include)
+
+if(NOT MSVC)
+  target_link_libraries(fst PRIVATE dl)
+endif()
+
 set_target_properties(fst PROPERTIES SOVERSION "${SOVERSION}")
 
 install(TARGETS fst
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION lib)
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
