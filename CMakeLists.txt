@@ -15,7 +15,7 @@ if(MSVC)
   option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 else()
   option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-endif(WIN32)
+endif()
 
 set(SOVERSION "23")
 OPTION(BUILD_USE_SOLUTION_FOLDERS "Enable grouping of projects in VS" ON)
