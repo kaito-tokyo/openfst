@@ -46,10 +46,13 @@ add_library(fstscript
   text-io.cc
   topsort.cc
   union.cc
-  verify.cc
   weight-class.cc
-  ${HEADER_FILES}
+  verify.cc
 )
+
+target_include_directories(fstscript PRIVATE ../include)
+target_link_libraries(fstscript PRIVATE fst)
+set_target_properties(fstscript PROPERTIES SOVERSION "${SOVERSION}")
 set_target_properties(fstscript PROPERTIES
   SOVERSION "${SOVERSION}"
 )
