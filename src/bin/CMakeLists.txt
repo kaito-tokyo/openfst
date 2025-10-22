@@ -1,18 +1,18 @@
-FILE(GLOB HEADER_FILES ../include/fst/*.h)
 
-add_executable(fstbin
-  # Add your binary source files here
-  ${HEADER_FILES}
+# Define all FST command binaries as in Makefile.am
+set(FST_BINARIES
+  fstarcsort fstclosure fstcompile fstcompose fstconcat fstconnect fstconvert
+  fstdeterminize fstdifference fstdisambiguate fstdraw fstencode fstepsnormalize
+  fstequal fstequivalent fstinfo fstintersect fstinvert fstisomorphic fstmap
+  fstminimize fstprint fstproject fstprune fstpush fstrandgen fstrelabel
+  fstreplace fstreverse fstreweight fstrmepsilon fstshortestdistance
+  fstshortestpath fstsymbols fstsynchronize fsttopsort fstunion
 )
-set_target_properties(fstbin PROPERTIES
-  SOVERSION "${SOVERSION}"
-)
 
-if(WIN32)
-  target_link_options(fstbin INTERFACE /WHOLEARCHIVE:$<TARGET_LINKER_FILE:fstbin>)
-endif()
-
-install(TARGETS fstbin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin)
+foreach(bin ${FST_BINARIES})
+  add_executable(${bin}
+    ${bin}.cc
+    ${bin}-main.cc
+  )
+  install(TARGETS ${bin} RUNTIME DESTINATION bin)
+endforeach()
