@@ -1,7 +1,7 @@
 FILE(GLOB HEADER_FILES ../include/fst/extensions/*.h)
 
 add_library(fstextensions
-  # Add your extension source files here
+  # No sources for now, placeholder for Windows build compatibility
   ${HEADER_FILES}
 )
 set_target_properties(fstextensions PROPERTIES

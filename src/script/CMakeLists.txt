@@ -4,7 +4,6 @@ add_library(fstscript
   arciterator-class.cc
   arcsort.cc
   closure.cc
-  compile-impl.cc
   compile.cc
   compose.cc
   concat.cc
@@ -14,7 +13,6 @@ add_library(fstscript
   determinize.cc
   difference.cc
   disambiguate.cc
-  draw-impl.cc
   draw.cc
   encode.cc
   encodemapper-class.cc
@@ -32,7 +30,6 @@ add_library(fstscript
   isomorphic.cc
   map.cc
   minimize.cc
-  print-impl.cc
   print.cc
   project.cc
   prune.cc
@@ -45,7 +42,6 @@ add_library(fstscript
   reverse.cc
   reweight.cc
   rmepsilon.cc
-  script-impl.cc
   shortest-distance.cc
   shortest-path.cc
   stateiterator-class.cc
