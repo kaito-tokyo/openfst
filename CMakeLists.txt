@@ -14,12 +14,11 @@ if (ZLIB_FOUND)
 endif (ZLIB_FOUND)
 
 set(CMAKE_MACOSX_RPATH 1)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 11)
 
 if (WIN32)
   add_definitions(/bigobj)
+  add_compile_options(/FS)
   #set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
   #this must be disabled unless the previous option (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS) is enabled
   option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
