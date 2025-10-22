@@ -18,8 +18,13 @@
 #include <cstdlib>       // for ssize_t.
 #include <cstdint>       // for ?int*_t.
 
+
 #ifndef FST_LIB_TYPES_H_
 #define FST_LIB_TYPES_H_
+// Windows/MSVC does not provide ssize_t, so define it using ptrdiff_t as in openfst-win-1.7.2
+#ifdef _MSC_VER
+using ssize_t = std::ptrdiff_t;
+#endif  // _MSC_VER
 
 using int8 = int8_t;
 using int16 = int16_t;
