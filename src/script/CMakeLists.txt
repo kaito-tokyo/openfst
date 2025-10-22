@@ -1,33 +1,56 @@
-if(HAVE_COMPACT)
-  add_subdirectory(compact)
-endif()
-if(HAVE_COMPRESS)
-  add_subdirectory(compress)
-endif()
-if(HAVE_CONST)
-  add_subdirectory(const)
-endif()
-if(HAVE_FAR)
-  add_subdirectory(far)
-endif()
-if(HAVE_LINEAR)
-  add_subdirectory(linear)
-endif()
-if(HAVE_LOOKAHEAD)
-  add_subdirectory(lookahead)
-endif()
-if(HAVE_MPDT)
-  add_subdirectory(mpdt)
-endif()
-if(HAVE_NGRAM)
-  add_subdirectory(ngram)
-endif()
-if(HAVE_PDT)
-  add_subdirectory(pdt)
-endif()
-if(HAVE_PYTHON)
-  add_subdirectory(python)
-endif()
-if(HAVE_SPECIAL)
-  add_subdirectory(special)
+if(HAVE_SCRIPT)
+    set(LIBFSTSCRIPT_SOURCES
+        arcsort.cc
+        arciterator-class.cc
+        closure.cc
+        compile.cc
+        compose.cc
+        concat.cc
+        connect.cc
+        convert.cc
+        decode.cc
+        determinize.cc
+        difference.cc
+        disambiguate.cc
+        draw.cc
+        encode.cc
+        encodemapper-class.cc
+        equal.cc
+        equivalent.cc
+        epsnormalize.cc
+        fst-class.cc
+        getters.cc
+        info.cc
+        info-impl.cc
+        intersect.cc
+        invert.cc
+        isomorphic.cc
+        map.cc
+        minimize.cc
+        print.cc
+        project.cc
+        prune.cc
+        push.cc
+        randequivalent.cc
+        randgen.cc
+        relabel.cc
+        replace.cc
+        reverse.cc
+        reweight.cc
+        rmepsilon.cc
+        shortest-distance.cc
+        shortest-path.cc
+        stateiterator-class.cc
+        synchronize.cc
+        text-io.cc
+        topsort.cc
+        union.cc
+        verify.cc
+        weight-class.cc
+    )
+
+    add_library(fstscript ${LIBFSTSCRIPT_SOURCES})
+    target_link_libraries(fstscript PUBLIC fst ${LIBS}) # libfst に依存
+    set_property(TARGET fstscript PROPERTY SOVERSION ${SOVERSION})
+    install(TARGETS fstscript LIBRARY DESTINATION lib RUNTIME DESTINATION bin ARCHIVE DESTINATION lib)
 endif()
