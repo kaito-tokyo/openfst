@@ -50,15 +50,16 @@ void Map(const Fst<A> &ifst, MutableFst<B> *ofst, C mapper) {
   ArcMap(ifst, ofst, mapper);
 }
 
-using MapFstOptions OPENFST_DEPRECATED("Use `ArcMapFstOptions` instead.") =
-    ArcMapFstOptions;
 
+
+// Deprecated: Use ArcMapFstOptions instead.
+using MapFstOptions = ArcMapFstOptions;
+// Deprecated: Use ArcMapFst instead.
 template <class A, class B, class C>
-using MapFst OPENFST_DEPRECATED("Use `ArcMapFst` instead.") = ArcMapFst<A, B, C>;
-
+using MapFst = ArcMapFst<A, B, C>;
+// Deprecated: Use IdentityArcMapper instead.
 template <class A>
-using IdentityMapper OPENFST_DEPRECATED("Use `IdentityArcMapper` instead.") =
-    IdentityArcMapper<A>;
+using IdentityMapper = IdentityArcMapper<A>;
 
 }  // namespace fst
 
