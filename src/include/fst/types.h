@@ -33,8 +33,10 @@ using uint16 = uint16_t;
 using uint32 = uint32_t;
 using uint64 = uint64_t;
 
-
-// ssize_t is not available on all platforms, so always define it here for consistency.
+#ifdef _MSC_VER
+// Not really Windows-specific: they should have used ptrdiff_t in the first
+// place. But on Windows there has never been ssize_t.
 using ssize_t = std::ptrdiff_t;
+#endif  // _MSC_VER
 
 #endif  // FST_LIB_TYPES_H_
