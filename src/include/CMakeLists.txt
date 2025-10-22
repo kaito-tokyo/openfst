@@ -42,6 +42,7 @@ set(FST_HEADERS
     fst/fstlib.h
     fst/generic-register.h
     fst/heap.h
+    fst/icu.h
     fst/intersect.h
     fst/interval-set.h
     fst/invert.h
@@ -181,7 +182,7 @@ if(HAVE_NGRAM)
     )
 endif()
 
-if(HAVE_PDT OR HAVE_MPDT OR HAVE_GRM)
+if(HAVE_PDT OR HAVE_GRM)
     list(
         APPEND
         FST_HEADERS
