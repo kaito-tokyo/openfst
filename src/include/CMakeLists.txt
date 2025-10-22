@@ -1,9 +1,3 @@
-# Create an interface target for the exported headers
-add_library(fst-headers INTERFACE)
-target_include_directories(fst-headers INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/fst>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/fst>
-)
 # CMakeLists.txt for installing public headers from include/ with conditions
 
 set(FST_HEADERS

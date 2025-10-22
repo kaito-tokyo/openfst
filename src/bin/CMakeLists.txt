@@ -47,10 +47,9 @@ foreach(bin ${FST_BINARIES})
                 ${CMAKE_SOURCE_DIR}/src/include
                 ${CMAKE_SOURCE_DIR}/src/script
         )
-        if(MSVC)
-            target_link_libraries(${bin} fstscript fst)
-        else()
-            target_link_libraries(${bin} fstscript fst dl)
+        target_link_libraries(${bin} fstscript fst)
+        if(NOT MSVC)
+            target_link_libraries(${bin} dl)
         endif()
         set_target_properties(${bin} PROPERTIES FOLDER bin)
     endif()

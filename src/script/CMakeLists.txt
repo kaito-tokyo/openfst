@@ -1,5 +1,3 @@
-FILE(GLOB HEADER_FILES ../include/fst/*.h)
-
 add_library(fstscript
   arciterator-class.cc
   arcsort.cc
@@ -50,18 +48,20 @@ add_library(fstscript
   verify.cc
 )
 
-target_include_directories(fstscript PRIVATE ../include)
+target_include_directories(fstscript PRIVATE ${CMAKE_SOURCE_DIR}/src/include)
 target_link_libraries(fstscript PRIVATE fst)
 set_target_properties(fstscript PROPERTIES SOVERSION "${SOVERSION}")
 set_target_properties(fstscript PROPERTIES
   SOVERSION "${SOVERSION}"
 )
 
-if(WIN32)
+if(MSVC)
   target_link_options(fstscript INTERFACE /WHOLEARCHIVE:$<TARGET_LINKER_FILE:fstscript>)
+else()
+  target_link_libraries(fstscript PRIVATE dl)
 endif()
 
 install(TARGETS fstscript
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION lib)
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
