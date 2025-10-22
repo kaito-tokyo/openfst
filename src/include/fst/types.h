@@ -15,6 +15,7 @@
 //
 // Various type definitions (mostly for Google compatibility).
 
+#include <cstddef>       // for std::ptrdiff_t
 #include <cstdlib>       // for ssize_t.
 #include <cstdint>       // for ?int*_t.
 
