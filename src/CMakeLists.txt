@@ -2,7 +2,7 @@
 
 include_directories(./include/)
 install(DIRECTORY include/ DESTINATION include/
-        FILES_MATCHING PATTERN "*.h")
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.inc")
 
 add_subdirectory(lib)
 add_subdirectory(script)
