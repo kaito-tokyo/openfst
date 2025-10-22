@@ -1,9 +1,6 @@
 FILE(GLOB HEADER_FILES ../include/fst/extensions/*.h)
 
-add_library(fstextensions
-  # No sources for now, placeholder for Windows build compatibility
-  ${HEADER_FILES}
-)
+add_library(fstextensions INTERFACE)
 set_target_properties(fstextensions PROPERTIES
   SOVERSION "${SOVERSION}"
 )

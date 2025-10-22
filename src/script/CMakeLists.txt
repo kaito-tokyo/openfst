@@ -20,8 +20,6 @@ add_library(fstscript
   equal.cc
   equivalent.cc
   fst-class.cc
-  fstscript-decl.cc
-  fstscript.cc
   getters.cc
   info-impl.cc
   info.cc
@@ -36,7 +34,6 @@ add_library(fstscript
   push.cc
   randequivalent.cc
   randgen.cc
-  register.cc
   relabel.cc
   replace.cc
   reverse.cc
