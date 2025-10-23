@@ -24,6 +24,27 @@
 #include <fst/log.h>
 #include <fst/extensions/ngram/nthbit.h>
 
+#if defined(_MSC_VER)
+#include <intrin.h>
+inline int popcountll(uint64_t x) {
+  return static_cast<int>(__popcnt64(x));
+}
+inline int ctzll(uint64_t x) {
+  unsigned long index;
+  if (_BitScanForward64(&index, x))
+    return static_cast<int>(index);
+  else
+    return 64; // Undefined, but mimic GCC behavior
+}
+#else
+inline int popcountll(uint64_t x) {
+  return __builtin_popcountll(x);
+}
+inline int ctzll(uint64_t x) {
+  return __builtin_ctzll(x);
+}
+#endif
+
 namespace fst {
 
 static_assert(sizeof(long long) >= sizeof(uint64),  // NOLINT
@@ -43,7 +64,7 @@ size_t BitmapIndex::Rank1(size_t end) const {
   // this depend on whether there's a popcnt instruction?
   if (bit_index == 0) return sum;  // Entire answer is in the index.
   const uint64 mask = (uint64{1} << bit_index) - 1;
-  return sum + __builtin_popcountll(bits_[end_word] & mask);
+  return sum + popcountll(bits_[end_word] & mask);
 }
 
 size_t BitmapIndex::Select1(size_t bit_index) const {
@@ -201,7 +222,7 @@ std::pair<size_t, size_t> BitmapIndex::Select0s(size_t bit_index) const {
   // If this is 0, then the next zero is not in the same word.
   if (masked_inv_word != 0) {
     // We can't ctz on 0, but we already checked that.
-    const int next_nth = __builtin_ctzll(masked_inv_word);
+    const int next_nth = ctzll(masked_inv_word);
     return {kStorageBitSize * word_index + nth,
             kStorageBitSize * word_index + next_nth};
   } else {
@@ -306,7 +327,7 @@ void BitmapIndex::BuildIndex(const uint64* bits, size_t num_bits,
 
     // We can assume that the last word has zeros in the high bits.
     const uint64 word = bits[word_index];
-    const int word_ones_count = __builtin_popcountll(word);
+    const int word_ones_count = popcountll(word);
     const uint32 bit_offset = kStorageBitSize * word_index;
 
     if (enable_select_0_index) {
