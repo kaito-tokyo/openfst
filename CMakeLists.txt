@@ -8,6 +8,12 @@ project(openfst LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add MSVC-specific compile options and definitions
+if(MSVC)
+    add_compile_options(/bigobj)
+    add_compile_definitions(NOMINMAX FST_NO_DYNAMIC_LINKING)
+endif()
+
 # OpenFst versioning
 set(OPENFST_VERSION 23.0.0)
 set(OPENFST_SOVERSION 23)

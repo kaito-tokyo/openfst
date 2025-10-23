@@ -20,7 +20,9 @@
 #ifndef FST_EXTENSIONS_FAR_CREATE_H_
 #define FST_EXTENSIONS_FAR_CREATE_H_
 
+#ifndef _MSC_VER
 #include <libgen.h>
+#endif
 
 #include <sstream>
 #include <string>
@@ -29,6 +31,48 @@
 #include <fst/extensions/far/far.h>
 
 namespace fst {
+
+#ifdef _MSC_VER
+inline char* far_create_internal_basename(char* path) {
+    static char dot[] = ".";
+    static char slash[] = "/";
+
+    char* last_sep = nullptr;
+    char* p;
+
+    if (!path || *path == '\0') {
+        return dot;
+    }
+
+    char* end = path + strlen(path) - 1;
+    while (end > path && (*end == '/' || *end == '\\')) {
+        *end = '\0';
+        end--;
+    }
+
+    p = path;
+    while (*p) {
+        if (*p == '/' || *p == '\\') {
+            last_sep = p;
+        }
+        p++;
+    }
+
+    if (last_sep == nullptr) {
+        if (path[0] != '\0' && path[1] == ':' && path[2] == '\0') {
+            return slash;
+        }
+
+        return path;
+    }
+
+    if (last_sep == path && *(last_sep + 1) == '\0') {
+        return slash;
+    }
+
+    return last_sep + 1;
+}
+#endif
 
 template <class Arc>
 void FarCreate(const std::vector<std::string> &in_sources,
@@ -51,7 +95,11 @@ void FarCreate(const std::vector<std::string> &in_sources,
     } else {
       auto *source = new char[in_sources[i].size() + 1];
       strcpy(source, in_sources[i].c_str());  // NOLINT
+#ifdef _MSC_VER
+      key = far_create_internal_basename(source);
+#else
       key = basename(source);
+#endif
       delete[] source;
     }
     far_writer->Add(key_prefix + key + key_suffix, *ifst);
