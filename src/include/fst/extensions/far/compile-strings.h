@@ -31,8 +31,10 @@
 #include <fstream>
 #include <fst/string.h>
 
+namespace fst {
+
 #ifdef _MSC_VER
-inline char* basename(char* path) {
+inline char* far_compile_strings_internal_basename(char* path) {
     static char dot[] = ".";
     static char slash[] = "/";
 
@@ -72,8 +74,6 @@ inline char* basename(char* path) {
     return last_sep + 1;
 }
 #endif
-
-namespace fst {
 
 // Constructs a reader that provides FSTs from a file (stream) either on a
 // line-by-line basis or on a per-stream basis. Note that the freshly
@@ -278,7 +278,11 @@ void FarCompileStrings(const std::vector<std::string> &in_sources,
       } else {
         auto *source = new char[in_source.size() + 1];
         strcpy(source, in_source.c_str());  // NOLINT
+#ifdef _MSC_VER
+        key = far_compile_strings_internal_basename(source);
+#else
         key = basename(source);
+#endif
         if (entry_type != FarEntryType::FILE) {
           key += "-";
           key += keybuf.str();

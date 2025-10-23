@@ -30,8 +30,10 @@
 
 #include <fst/extensions/far/far.h>
 
+namespace fst {
+
 #ifdef _MSC_VER
-inline char* basename(char* path) {
+inline char* far_create_internal_basename(char* path) {
     static char dot[] = ".";
     static char slash[] = "/";
 
@@ -72,8 +74,6 @@ inline char* basename(char* path) {
 }
 #endif
 
-namespace fst {
-
 template <class Arc>
 void FarCreate(const std::vector<std::string> &in_sources,
                const std::string &out_source, const int32 generate_keys,
@@ -95,7 +95,11 @@ void FarCreate(const std::vector<std::string> &in_sources,
     } else {
       auto *source = new char[in_sources[i].size() + 1];
       strcpy(source, in_sources[i].c_str());  // NOLINT
+#ifdef _MSC_VER
+      key = far_create_internal_basename(source);
+#else
       key = basename(source);
+#endif
       delete[] source;
     }
     far_writer->Add(key_prefix + key + key_suffix, *ifst);
