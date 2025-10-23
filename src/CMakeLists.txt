@@ -1,51 +1,49 @@
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
-# ヘッダファイルを管理する INTERFACE ターゲットを定義します。
+# Define an INTERFACE target to manage header files.
 #
-# この 'fst_headers' ターゲットにリンクするだけで、
-# 'src/include' ディレクトリが自動的にインクルードパスに追加されます。
-# これにより、各サブプロジェクトでの include_directories() の呼び出しが不要になります。
+# Linking to the 'fst_headers' target automatically adds 'src/include' to the include path.
+# This eliminates the need to call include_directories() in each subproject.
 add_library(fst_headers INTERFACE)
-target_include_directories(fst_headers INTERFACE
-    # $<BUILD_INTERFACE:...> : ビルドツリー内で 'fst_headers' にリンクした時のパス
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    
-    # $<INSTALL_INTERFACE:...> : インストール先で 'fst_headers' にリンクした時のパス
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+target_include_directories(
+    fst_headers
+    INTERFACE
+        # $<BUILD_INTERFACE:...> : Path used when linking 'fst_headers' in the build tree
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        # $<INSTALL_INTERFACE:...> : Path used when linking 'fst_headers' after installation
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 install(TARGETS fst_headers EXPORT fst-targets)
 
-# 各コンポーネントのディレクトリをビルドに追加
+# Add subdirectories for each component
 add_subdirectory(lib)
 add_subdirectory(script)
 if(OPENFST_BUILD_BIN)
-  add_subdirectory(bin)
+    add_subdirectory(bin)
 endif()
 add_subdirectory(extensions)
 
-# (ユーザーの指示に基づき、'add_subdirectory(test)' は削除されました)
-# [追加] 'src/lib/' から移動した install(EXPORT ...) コマンド
-# すべての add_subdirectory が完了した後、
-# 'fst-targets' セットに蓄積された全ターゲット（fst, fst_headers）を
-# パッケージファイルに書き出します。
-install(EXPORT fst-targets
+# Write all targets (fst, fst_headers) accumulated in 'fst-targets'
+# to the package file after all add_subdirectory calls.
+install(
+    EXPORT fst-targets
     FILE fst-targets.cmake
     NAMESPACE OpenFst::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openfst
 )
 
-# [追加] 'OpenFstConfig.cmake.in' をテンプレートとして 'OpenFstConfig.cmake' を生成
+# Generate 'OpenFstConfig.cmake' from the 'OpenFstConfig.cmake.in' template
 configure_package_config_file(
     ${CMAKE_SOURCE_DIR}/cmake/OpenFstConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openfst
-    # OpenFstConfig.cmake.in の @PACKAGE_INIT@ が使う変数を渡す
+    # Pass variables used by @PACKAGE_INIT@ in OpenFstConfig.cmake.in
     PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
 )
 
-# [追加] 生成された 'OpenFstConfig.cmake' をインストール
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
+# Install the generated 'OpenFstConfig.cmake'
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/openfst
 )
