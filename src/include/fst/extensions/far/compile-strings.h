@@ -18,7 +18,9 @@
 #ifndef FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
 #define FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
 
+#ifndef _MSC_VER
 #include <libgen.h>
+#endif
 
 #include <fstream>
 #include <istream>
@@ -30,6 +32,48 @@
 #include <fst/string.h>
 
 namespace fst {
+
+#ifdef _MSC_VER
+inline char* far_compile_strings_internal_basename(char* path) {
+    static char dot[] = ".";
+    static char slash[] = "/";
+
+    char* last_sep = NULL;
+    char* p;
+
+    if (!path || *path == '\0') {
+        return dot;
+    }
+
+    char* end = path + strlen(path) - 1;
+    while (end > path && (*end == '/' || *end == '\\')) {
+        *end = '\0';
+        end--;
+    }
+
+    p = path;
+    while (*p) {
+        if (*p == '/' || *p == '\\') {
+            last_sep = p;
+        }
+        p++;
+    }
+
+    if (last_sep == NULL) {
+        if (path[0] != '\0' && path[1] == ':' && path[2] == '\0') {
+            return slash;
+        }
+
+        return path;
+    }
+
+    if (last_sep == path && *(last_sep + 1) == '\0') {
+        return slash;
+    }
+
+    return last_sep + 1;
+}
+#endif
 
 // Constructs a reader that provides FSTs from a file (stream) either on a
 // line-by-line basis or on a per-stream basis. Note that the freshly
@@ -234,7 +278,11 @@ void FarCompileStrings(const std::vector<std::string> &in_sources,
       } else {
         auto *source = new char[in_source.size() + 1];
         strcpy(source, in_source.c_str());  // NOLINT
+#ifdef _MSC_VER
+        key = far_compile_strings_internal_basename(source);
+#else
         key = basename(source);
+#endif
         if (entry_type != FarEntryType::FILE) {
           key += "-";
           key += keybuf.str();

@@ -28,7 +28,7 @@
 DECLARE_string(far_type);
 DECLARE_string(fst_type);
 
-int farconvert_main(int argc, char *argv[]) {
+int farconvert_main(int argc, char **argv) {
   namespace s = fst::script;
 
   std::string usage = "Converts FST and container types.\n\n Usage:";
