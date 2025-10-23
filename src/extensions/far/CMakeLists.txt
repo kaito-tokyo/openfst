@@ -1,12 +1,12 @@
 include(GNUInstallDirs)
 
-# 'src/include/fst/extensions/far' 以下の全ヘッダを glob して取得 (IDE連携用)
+# Glob all headers under 'src/include/fst/extensions/far' (for IDE integration)
 file(GLOB_RECURSE FAR_HEADERS_H RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../../include/fst/extensions/far/*.h)
 file(GLOB_RECURSE FAR_HEADERS_INC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../../include/fst/extensions/far/*.inc)
 set(FAR_HEADERS ${FAR_HEADERS_H} ${FAR_HEADERS_INC})
 
 # ------------------------------------------------------------------
-# ライブラリ (libfstfar.la)
+# Library: fstfar (corresponds to libfstfar.la)
 # ------------------------------------------------------------------
 add_library(fstfar
     sttable.cc
@@ -18,13 +18,13 @@ set_target_properties(fstfar PROPERTIES
     SOVERSION "${OPENFST_SOVERSION}"
 )
 
-# ヘッダをIDE連携のために PRIVATE で追加
+# Add headers for IDE integration
 target_sources(fstfar PRIVATE ${FAR_HEADERS})
 
-# 依存関係 (libfstfar_la_LIBADD)
+# Dependencies (libfstfar_la_LIBADD)
 target_link_libraries(fstfar PUBLIC fst)
 
-# インストール設定
+# Install settings
 install(TARGETS fstfar
     EXPORT fst-targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -33,7 +33,7 @@ install(TARGETS fstfar
 )
 
 # ------------------------------------------------------------------
-# ライブラリ (libfstfarscript.la)
+# Library: fstfarscript (corresponds to libfstfarscript.la)
 # ------------------------------------------------------------------
 add_library(fstfarscript
     far-class.cc
@@ -41,7 +41,7 @@ add_library(fstfarscript
     getters.cc
     script-impl.cc
     strings.cc
-    # (sttable.cc と stlist.cc は fstfar ターゲットからリンクするため除外)
+    # (sttable.cc and stlist.cc are linked from the fstfar target)
 )
 
 set_target_properties(fstfarscript PROPERTIES
@@ -49,13 +49,13 @@ set_target_properties(fstfarscript PROPERTIES
     SOVERSION "${OPENFST_SOVERSION}"
 )
 
-# ヘッダをIDE連携のために PRIVATE で追加
+# Add headers for IDE integration
 target_sources(fstfarscript PRIVATE ${FAR_HEADERS})
 
-# 依存関係 (libfstfarscript_la_LIBADD)
+# Dependencies (libfstfarscript_la_LIBADD)
 target_link_libraries(fstfarscript PUBLIC fstfar fstscript)
 
-# インストール設定
+# Install settings
 install(TARGETS fstfarscript
     EXPORT fst-targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -64,7 +64,7 @@ install(TARGETS fstfarscript
 )
 
 # ------------------------------------------------------------------
-# 実行可能バイナリ (OPENFST_BUILD_BIN が ON の場合のみ)
+# Executable binaries (only if OPENFST_BUILD_BIN is ON)
 # ------------------------------------------------------------------
 
 if(OPENFST_BUILD_BIN)
@@ -86,15 +86,15 @@ if(OPENFST_BUILD_BIN)
             ${target_name}-main.cc
         )
         
-        # 依存関係 (Makefile.am の LDADD)
-        # (fstfarscript が fstfar, fstscript, fst, m, dl を継承)
+        # Dependencies (Makefile.am's LDADD)
+        # (fstfarscript inherits fstfar, fstscript, fst, m, dl)
         target_link_libraries(${target_name} PRIVATE
             fstfarscript
             lib_export_dynamic
         )
     endforeach()
     
-    # バイナリをインストール
+    # Install binaries
     install(TARGETS ${FAR_BINARIES}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}

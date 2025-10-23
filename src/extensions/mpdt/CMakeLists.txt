@@ -1,33 +1,31 @@
 include(GNUInstallDirs)
 
-# 'src/include/fst/extensions/mpdt' 以下の全ヘッダを glob して取得 (IDE連携用)
+# Glob all headers under 'src/include/fst/extensions/mpdt' (for IDE integration)
 file(GLOB_RECURSE MPDT_HEADERS_H RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/mpdt/*.h)
 file(GLOB_RECURSE MPDT_HEADERS_INC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/mpdt/*.inc)
 set(MPDT_HEADERS ${MPDT_HEADERS_H} ${MPDT_HEADERS_INC})
 
 # ------------------------------------------------------------------
-# ライブラリ (libfstmpdtscript.la)
+# Library: mpdtscript (corresponds to libfstmpdtscript.la)
 # ------------------------------------------------------------------
-
-# Target: mpdtscript (libfstmpdtscript.la に対応)
 add_library(mpdtscript
     mpdtscript.cc
 )
 
-# バージョン情報を設定 (Makefile.am の -version-info 23:0:0 に対応)
+# Set version information (corresponds to Makefile.am's -version-info 23:0:0)
 set_target_properties(mpdtscript PROPERTIES
     VERSION "${OPENFST_VERSION}"
     SOVERSION "${OPENFST_SOVERSION}"
 )
 
-# ヘッダをIDE連携のために PRIVATE で追加
+# Add headers for IDE integration
 target_sources(mpdtscript PRIVATE ${MPDT_HEADERS})
 
-# 依存関係 (Makefile.am の libfstmpdtscript_la_LIBADD に対応)
-# fstscript が fst, m, dl を継承
+# Dependencies (corresponds to Makefile.am's libfstmpdtscript_la_LIBADD)
+# fstscript inherits fst, m, dl
 target_link_libraries(mpdtscript PUBLIC fstscript)
 
-# ライブラリをインストールし、'fst-targets' エクスポートセットに追加
+# Install the library and add it to the 'fst-targets' export set
 install(TARGETS mpdtscript
     EXPORT fst-targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -36,9 +34,8 @@ install(TARGETS mpdtscript
 )
 
 # ------------------------------------------------------------------
-# 実行可能バイナリ (OPENFST_BUILD_BIN が ON の場合のみ)
+# Executable binaries (only if OPENFST_BUILD_BIN is ON)
 # ------------------------------------------------------------------
-
 if(OPENFST_BUILD_BIN)
 
     set(MPDT_BINARIES
@@ -54,9 +51,9 @@ if(OPENFST_BUILD_BIN)
             ${target_name}-main.cc
         )
         
-        # 依存関係 (Makefile.am の LDADD に対応)
-        # 'pdtscript' が ../pdt/libfstpdtscript.la に対応
-        # 'mpdtscript' が libfstmpdtscript.la に対応
+        # Dependencies (corresponds to Makefile.am's LDADD)
+        # 'pdtscript' corresponds to ../pdt/libfstpdtscript.la
+        # 'mpdtscript' corresponds to libfstmpdtscript.la
         target_link_libraries(${target_name} PRIVATE
             mpdtscript
             pdtscript
@@ -64,7 +61,7 @@ if(OPENFST_BUILD_BIN)
         )
     endforeach()
     
-    # バイナリをインストール
+    # Install binaries
     install(TARGETS ${MPDT_BINARIES}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}

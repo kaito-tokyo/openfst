@@ -1,5 +1,5 @@
 # Extension: Compact
-#
+
 set(COMPACT_TYPES
     compact16_acceptor
     compact16_string
@@ -18,28 +18,26 @@ set(COMPACT_TYPES
     compact8_weighted_string
 )
 
-# GNUInstallDirs は親スコープ (src/CMakeLists.txt) でインクルード済みですが、
-# CMAKE_INSTALL_LIBDIR 等の変数を参照するためにここでもインクルードします
+# Include GNUInstallDirs to access CMAKE_INSTALL_LIBDIR and related variables
 include(GNUInstallDirs)
 
-# ループですべての Compact ライブラリを定義
-# 
+# Define all Compact libraries in a loop
 foreach(type IN LISTS COMPACT_TYPES)
-    # ターゲットを定義 (例: compact16_acceptor-fst)
+    # Define target (e.g., compact16_acceptor-fst)
     add_library(${type}-fst
         ${type}-fst.cc
     )
 
-    # バージョン情報を設定 (ルートの CMakeLists.txt で定義された変数を使用)
+    # Set version information (using variables defined in the root CMakeLists.txt)
     set_target_properties(${type}-fst PROPERTIES
         VERSION "${OPENFST_VERSION}"
         SOVERSION "${OPENFST_SOVERSION}"
     )
 
-    # メインの 'fst' ライブラリにリンク
+    # Link to the main 'fst' library
     target_link_libraries(${type}-fst PUBLIC fst)
 
-    # ライブラリをインストールし、'fst-targets' エクスポートセットに追加
+    # Install the library and add it to the 'fst-targets' export set
     install(TARGETS ${type}-fst
         EXPORT fst-targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

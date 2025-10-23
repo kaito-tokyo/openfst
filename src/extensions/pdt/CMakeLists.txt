@@ -1,34 +1,32 @@
 include(GNUInstallDirs)
 
-# 'src/include/fst/extensions/pdt' 以下の全ヘッダを glob して取得 (IDE連携用)
+# Glob all headers under 'src/include/fst/extensions/pdt' (for IDE integration)
 file(GLOB_RECURSE PDT_HEADERS_H RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/pdt/*.h)
 file(GLOB_RECURSE PDT_HEADERS_INC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/pdt/*.inc)
 set(PDT_HEADERS ${PDT_HEADERS_H} ${PDT_HEADERS_INC})
 
 # ------------------------------------------------------------------
-# ライブラリ (libfstpdtscript.la)
+# Library: pdtscript (corresponds to libfstpdtscript.la)
 # ------------------------------------------------------------------
-
-# Target: pdtscript (libfstpdtscript.la に対応)
 add_library(pdtscript
     getters.cc
     pdtscript.cc
 )
 
-# バージョン情報を設定 (Makefile.am の -version-info 23:0:0 に対応)
+# Set version information (corresponds to Makefile.am's -version-info 23:0:0)
 set_target_properties(pdtscript PROPERTIES
     VERSION "${OPENFST_VERSION}"
     SOVERSION "${OPENFST_SOVERSION}"
 )
 
-# ヘッダをIDE連携のために PRIVATE で追加
+# Add headers for IDE integration
 target_sources(pdtscript PRIVATE ${PDT_HEADERS})
 
-# 依存関係 (Makefile.am の libfstpdtscript_la_LIBADD に対応)
-# fstscript が fst, m, dl を継承
+# Dependencies (corresponds to Makefile.am's libfstpdtscript_la_LIBADD)
+# fstscript inherits fst, m, dl
 target_link_libraries(pdtscript PUBLIC fstscript)
 
-# ライブラリをインストールし、'fst-targets' エクスポートセットに追加
+# Install the library and add it to the 'fst-targets' export set
 install(TARGETS pdtscript
     EXPORT fst-targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -37,9 +35,8 @@ install(TARGETS pdtscript
 )
 
 # ------------------------------------------------------------------
-# 実行可能バイナリ (OPENFST_BUILD_BIN が ON の場合のみ)
+# Executable binaries (only if OPENFST_BUILD_BIN is ON)
 # ------------------------------------------------------------------
-
 if(OPENFST_BUILD_BIN)
 
     set(PDT_BINARIES
@@ -57,15 +54,15 @@ if(OPENFST_BUILD_BIN)
             ${target_name}-main.cc
         )
         
-        # 依存関係 (Makefile.am の LDADD に対応)
-        # (pdtscript が fstscript, fst, m, dl を継承)
+        # Dependencies (corresponds to Makefile.am's LDADD)
+        # (pdtscript inherits fstscript, fst, m, dl)
         target_link_libraries(${target_name} PRIVATE
             pdtscript
             lib_export_dynamic
         )
     endforeach()
     
-    # バイナリをインストール
+    # Install binaries
     install(TARGETS ${PDT_BINARIES}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}

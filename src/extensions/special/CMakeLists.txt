@@ -1,35 +1,33 @@
 include(GNUInstallDirs)
 
-# 'src/include/fst/extensions/special' 以下の全ヘッダを glob して取得 (IDE連携用)
+# Glob all headers under 'src/include/fst/extensions/special' (for IDE integration)
 file(GLOB_RECURSE SPECIAL_HEADERS_H RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/special/*.h)
 file(GLOB_RECURSE SPECIAL_HEADERS_INC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../include/fst/extensions/special/*.inc)
 set(SPECIAL_HEADERS ${SPECIAL_HEADERS_H} ${SPECIAL_HEADERS_INC})
 
 # ------------------------------------------------------------------
-# ライブラリ (libfstspecial.la)
+# Library: fstspecial (corresponds to libfstspecial.la)
+# Combines modules like phi-fst.la into a single library
 # ------------------------------------------------------------------
-
-# Target: fstspecial (libfstspecial.la に対応)
-# (Makefile.am の phi-fst.la 等のモジュールもこの単一ライブラリに統合)
 add_library(fstspecial
     phi-fst.cc
     rho-fst.cc
     sigma-fst.cc
 )
 
-# バージョン情報を設定 (Makefile.am の -version-info 23:0:0 に対応)
+# Set version information (corresponds to Makefile.am's -version-info 23:0:0)
 set_target_properties(fstspecial PROPERTIES
     VERSION "${OPENFST_VERSION}"
     SOVERSION "${OPENFST_SOVERSION}"
 )
 
-# ヘッダをIDE連携のために PRIVATE で追加
+# Add headers for IDE integration
 target_sources(fstspecial PRIVATE ${SPECIAL_HEADERS})
 
-# 依存関係 (Makefile.am の LIBS に対応)
+# Dependencies (corresponds to Makefile.am's LIBS)
 target_link_libraries(fstspecial PUBLIC fst)
 
-# ライブラリをインストールし、'fst-targets' エクスポートセットに追加
+# Install the library and add it to the 'fst-targets' export set
 install(TARGETS fstspecial
     EXPORT fst-targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -38,37 +36,34 @@ install(TARGETS fstspecial
 )
 
 # ------------------------------------------------------------------
-# 実行可能バイナリ (OPENFST_BUILD_BIN が ON の場合のみ)
+# Executable binary (only if OPENFST_BUILD_BIN is ON)
 # ------------------------------------------------------------------
-
 if(OPENFST_BUILD_BIN)
 
-    # [変更] 実行可能ファイルのCMakeターゲット名を 'fstspecial_bin' に変更
+    # Use 'fstspecial_bin' as the CMake target name for the executable
     add_executable(fstspecial_bin
-        # Makefile.am の fstspecial_SOURCES に従い、fstspecial.cc を使用
+        # Use fstspecial.cc as per Makefile.am's fstspecial_SOURCES
         fstspecial.cc
-        # (phi-fst.cc 等はライブラリ 'fstspecial' からリンクする)
+        # (phi-fst.cc etc. are linked from the 'fstspecial' library)
     )
     
-    # [追加] 実行可能ファイルの出力ファイル名 (bin_PROGRAMS) は 'fstspecial' のままにする
+    # Set the output file name to 'fstspecial' (matches bin_PROGRAMS)
     set_target_properties(fstspecial_bin PROPERTIES
         OUTPUT_NAME "fstspecial"
     )
 
-    # [変更] ターゲット名を 'fstspecial_bin' に変更
     target_include_directories(fstspecial_bin PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/../../bin
     )
 
-    # [変更] ターゲット名を 'fstspecial_bin' に変更
-    # (Makefile.am の LDADD と SOURCES をCMake流にリンクで解釈)
+    # Link dependencies (as per Makefile.am's LDADD and SOURCES)
     target_link_libraries(fstspecial_bin PRIVATE
         fstscript
         fstspecial
         lib_export_dynamic
     )
 
-    # [変更] インストールするターゲット名を 'fstspecial_bin' に変更
+    # Install the executable
     install(TARGETS fstspecial_bin
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         DESTINATION ${CMAKE_INSTALL_BINDIR}
