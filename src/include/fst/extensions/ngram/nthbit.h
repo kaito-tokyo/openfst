@@ -27,7 +27,33 @@
 #include <fst/types.h>
 #include <fst/log.h>
 
-#if defined(__BMI2__)  // Intel Bit Manipulation Instruction Set 2
+#if defined(_MSC_VER)
+// MSVC implementation using intrinsics.
+#include <intrin.h>
+
+namespace fst {
+// Returns the position (0-63) of the r-th 1 bit in v.
+// 0 <= r < CountOnes(v) <= 64. Therefore, v must not be 0.
+inline uint32 nth_bit(uint64 v, uint32 r) {
+  DCHECK_NE(v, 0);
+  DCHECK_LE(0, r);
+  // __popcnt64 is available on x64 MSVC
+  DCHECK_LT(r, static_cast<uint32>(__popcnt64(v)));
+
+  // Find the position of the r-th set bit in v.
+  // This is a simple implementation; for performance, a broadword version could be ported.
+  for (uint32 i = 0; i < 64; ++i) {
+    if (v & (uint64(1) << i)) {
+      if (r == 0) return i;
+      --r;
+    }
+  }
+  // Should never reach here due to DCHECKs.
+  return 64;
+}
+}  // namespace fst
+
+#elif defined(__BMI2__)  // Intel Bit Manipulation Instruction Set 2
 // PDEP requires BMI2; this is present starting with Haswell.
 
 #include <immintrin.h>
