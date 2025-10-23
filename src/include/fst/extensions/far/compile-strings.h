@@ -18,7 +18,9 @@
 #ifndef FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
 #define FST_EXTENSIONS_FAR_COMPILE_STRINGS_H_
 
+#ifndef _MSC_VER
 #include <libgen.h>
+#endif
 
 #include <fstream>
 #include <istream>
@@ -28,6 +30,48 @@
 #include <fst/extensions/far/far.h>
 #include <fstream>
 #include <fst/string.h>
+
+#ifdef _MSC_VER
+inline char* basename(char* path) {
+    static char dot[] = ".";
+    static char slash[] = "/";
+
+    char* last_sep = NULL;
+    char* p;
+
+    if (!path || *path == '\0') {
+        return dot;
+    }
+
+    char* end = path + strlen(path) - 1;
+    while (end > path && (*end == '/' || *end == '\\')) {
+        *end = '\0';
+        end--;
+    }
+
+    p = path;
+    while (*p) {
+        if (*p == '/' || *p == '\\') {
+            last_sep = p;
+        }
+        p++;
+    }
+
+    if (last_sep == NULL) {
+        if (path[0] != '\0' && path[1] == ':' && path[2] == '\0') {
+            return slash;
+        }
+
+        return path;
+    }
+
+    if (last_sep == path && *(last_sep + 1) == '\0') {
+        return slash;
+    }
+
+    return last_sep + 1;
+}
+#endif
 
 namespace fst {
 
