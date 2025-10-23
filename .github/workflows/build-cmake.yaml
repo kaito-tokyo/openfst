@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main, master, develop]
 
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
 jobs:
   Build:
     strategy:
@@ -15,6 +22,8 @@ jobs:
           - macos-15
 
     runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 60
 
     steps:
       - name: Checkout
